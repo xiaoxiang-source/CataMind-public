@@ -56,7 +56,11 @@ class TestResourceDefaults(unittest.TestCase):
         if not server._PHYSICAL_CORE_COUNT_RELIABLE:
             print("SKIP: /proc/cpuinfo 拓扑字段缺失，无法可靠核验本机物理核数")
             self.skipTest("本机 /proc/cpuinfo 拓扑字段缺失")
-        self.assertEqual(count, 192)
+        # 不绑定具体核数：原断言写死 192，只对作者服务器成立，通用 CI runner 必然失败。
+        # 改为校验探测结果的合理性——为正整数，且不超过逻辑核数（SMT 下物理核 ≤ 逻辑核）。
+        logical = os.cpu_count() or count
+        self.assertGreaterEqual(count, 1)
+        self.assertLessEqual(count, logical)
         self.assertIs(server._PHYSICAL_CORE_COUNT_RELIABLE, True)
 
     def test_missing_cpuinfo_falls_back_without_error(self):

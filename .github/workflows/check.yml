@@ -5,6 +5,12 @@ permissions:
 jobs:
   regression:
     runs-on: ubuntu-latest
+    env:
+      # 队列总核数预算默认由物理核数推导（作者服务器 = 96 → 上限 96//2）。
+      # 通用 runner 只有 2 核，会让 test_governor_wiring 的排队用例提前命中
+      # "nproc-busy" 分支。此处显式设为 0（不限），使用例回到其原本要测的
+      # "提交阶段返回 GOVERNOR_QUEUE busy 时任务保持 queued" 语义。
+      CATMAT_QUEUE_MAX_TOTAL_NPROC: '0'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -13,5 +19,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      # catmat_tools/postprocess_pdos.py 在模块级 import numpy，
+      # 而 test_scientific_integrity 会间接引入它。
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install numpy
       - run: python scripts/check_release.py
       - run: python -m unittest tests.test_postprocess_http -v
