@@ -1,0 +1,5 @@
+[
+  {"category":"OT 方法","topic":"测试：OT 预处理器 FULL_KINETIC","keyword":"PRECONDITIONER","recommended":"FULL_KINETIC（极大体系）","rationale":"极大体系构建 FULL_ALL 预条件成本过高时，降级为 FULL_KINETIC（对 S 和 T 做 Cholesky 求逆，构建快、稳健）。","source":"CP2K 官方手册"},
+  {"category":"OT 方法","topic":"测试：OT 算法 IRAC","keyword":"ALGORITHM","recommended":"IRAC（迭代细化）","rationale":"IRAC 基于 OT 的近似合同变换迭代细化，可与 ON_THE_FLY_LOC 即时局域化联用。","source":"CP2K 官方手册"},
+  {"category":"SCF 收敛","topic":"测试：OT 收敛诊断","keyword":"&OUTER_SCF","recommended":"OT 难收敛时增大 MAX_SCF 或换 OPTIMIZER","rationale":"外层 SCF 循环包裹内层 SCF，用于稳定困难 OT 收敛；OPTIMIZER 可选 SD/DIIS/BROYDEN。","source":"CP2K 官方手册"}
+]

@@ -1,0 +1,60 @@
+# ---- 敏感配置（含密钥，绝不入库）----
+.env
+llm_config.json
+*.key
+*.pem
+*.token
+secrets.*
+miniapp/project.private.config.json
+data/accounts/
+*.db.accounts/
+
+# ---- 数据库与备份（数据资产，不进版本库）----
+catmat.db
+catmat.db-wal
+catmat.db-shm
+backups/
+*.db
+*.db-wal
+*.db-shm
+
+# ---- 运行产物与缓存 ----
+.tmp/
+__pycache__/
+*.py[cod]
+*.egg-info/
+cp2k_runs/
+logs/
+*.log
+
+# ---- 第三方大型资料（体积过大，改用官方链接）----
+docs/Multiwfn_manual_2026.9.1.pdf
+
+# ---- 系统 / 编辑器 ----
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local deployment state and generated release artifacts
+.env.*
+!.env.example
+*.db.bak*
+*.bak
+*.bak.*
+*.bak_*
+.workbuddy/
+.codex/
+.agents/
+.aws/
+node_modules/
+.release/
+CataMind-*-Release-*/
+CataMind_demo_*/
+codex_uploads/
+analysis_outputs/
+data/datasets/
+data/reports/
+data/postprocess_inputs/
+data/postprocess_runs/

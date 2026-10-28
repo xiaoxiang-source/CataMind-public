@@ -1,0 +1,115 @@
+# =============================================================================
+# CP2K「原子区分命名」PDOS 示例：表面 Ir / Ru 双位点（O-O 双位点吸附）
+# 已在本机 CP2K 2026.2 实测通过（同构小体系 Cu1/Cu2/Ru1 验证：输出 3 份独立 PDOS）
+#
+# 要点：
+#   1) &COORD 中把同一种元素按位点拆成不同名字：Ir1（表面）/ Ir2（次表层）
+#   2) 每个名字都要有对应 &KIND，其中 ELEMENT 相同、基组/赝势相同
+#      —— 物理上仍是同一个元素，CP2K 只是按 KIND 分别统计 PDOS
+#   3) PDOS 必须写在 &DFT &PRINT &DOS &PDOS 之下（不能直接在 &PRINT 下）
+#   4) 输出：<PROJECT>-k<N>-1.pdos，文件头为 "# Projected DOS for atomic kind Ir1"
+#
+# 运行：source ~/bin/cp2k-2026.2/install/cp2k_env && cp2k.psmp -i pdos_kind_split.inp
+# 后处理：python3 catmat.py pdos-site-softness <目录> --group "surface:Ir1,Ru1" --json out.json
+# =============================================================================
+&GLOBAL
+  PROJECT IrRu_OO
+  RUN_TYPE ENERGY          ! 也可 GEO_OPT；PDOS 在最后一步 SCF 后打印
+  PRINT_LEVEL LOW
+&END GLOBAL
+
+&FORCE_EVAL
+  METHOD Quickstep
+  &SUBSYS
+    &CELL
+      ABC 8.34 8.34 25.0       ! 表面slab：ab 为晶格，c 含 ≥15 Å 真空
+      PERIODIC XYZ             ! 表面模型：面内周期、法向为非周期的真空层
+    &END CELL
+
+    ! ---- 结构：同一元素按位点分别命名（这是本技巧的核心）----
+    ! 命名规则建议：元素符号 + 位点序号（Ir1=表面参与吸附的Ir，Ir2=次表层Ir）
+    &COORD
+      Ir1   0.000000   0.000000  10.000000   ! 表面 Ir（O-O 双位点之一）
+      Ir2   2.780000   2.780000   7.800000   ! 次表层 Ir
+      Ru1   2.780000   0.000000  10.000000   ! 表面 Ru（O-O 双位点之二）
+      Ru2   0.000000   2.780000   7.800000   ! 次表层 Ru
+      O     1.390000   1.390000  11.800000   ! 吸附 O（若只做 clean slab 可删）
+      O     4.170000   1.390000  11.800000
+    &END COORD
+
+    ! ---- 每个命名都要有 &KIND；ELEMENT 相同即保证物理一致 ----
+    &KIND Ir1
+      ELEMENT Ir
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      POTENTIAL GTH-PBE
+    &END KIND
+    &KIND Ir2
+      ELEMENT Ir
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      POTENTIAL GTH-PBE
+    &END KIND
+    &KIND Ru1
+      ELEMENT Ru
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      POTENTIAL GTH-PBE
+    &END KIND
+    &KIND Ru2
+      ELEMENT Ru
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      POTENTIAL GTH-PBE
+    &END KIND
+    &KIND O
+      ELEMENT O
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      POTENTIAL GTH-PBE
+    &END KIND
+  &END SUBSYS
+
+  &DFT
+    BASIS_SET_FILE_NAME BASIS_MOLOPT
+    POTENTIAL_FILE_NAME POTENTIAL
+
+    &MGRID
+      CUTOFF 400            ! 金属/O 体系建议 ≥400 Ry（示例值按体系调整，做收敛测试）
+      REL_CUTOFF 60
+    &END MGRID
+    &QS
+      EPS_DEFAULT 1.0E-12
+      EXTRAPOLATION USE_GUESS
+    &END QS
+
+    &SCF
+      MAX_SCF 200
+      EPS_SCF 1.0E-6
+      ADDED_MOS 30            ! PDOS 需要空轨道；NLUMO 不足时 CP2K 会自动增加
+      &SMEAR                  ! 金属体系：smearing 必需
+        METHOD FERMI_DIRAC
+        ELECTRONIC_TEMPERATURE 300
+      &END SMEAR
+      &DIAGONALIZATION
+        ALGORITHM STANDARD
+      &END DIAGONALIZATION
+      &MIXING
+        METHOD BROYDEN_MIXING
+        ALPHA 0.3
+        NBROYDEN 8
+      &END MIXING
+    &END SCF
+
+    &XC
+      &XC_FUNCTIONAL PBE
+      &END XC_FUNCTIONAL
+    &END XC
+
+    ! ---- PDOS 输出：注意层级 &DFT &PRINT &DOS &PDOS ----
+    &PRINT
+      &DOS
+        NLUMO 10                 ! 输出到 LUMO+10（与 ADDED_MOS 配合）
+        ! FILENAME IrRu_OO       ! 可选：自定义文件名前缀
+        &PDOS
+          COMPONENTS T           ! 输出 s / p / d / f 各角动量分量（算 d 带中心必备）
+        &END PDOS
+      &END DOS
+    &END PRINT
+  &END DFT
+&END FORCE_EVAL

@@ -1,0 +1,245 @@
+[
+  {
+    "category": "泛函",
+    "topic": "DFT 交换关联泛函选择",
+    "keyword": "XC_FUNCTIONAL",
+    "recommended": "PBE（吸附能/弱相互作用建议用 RPBE 交叉验证）",
+    "rationale": "金属/氧化物体系 GGA-PBE 稳健、计算经济；吸附能对泛函敏感，中间体结合能建议用 RPBE 复算。需要准确带隙或能带时用杂化泛函 PBE0/HSE06。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "泛函",
+    "topic": "杂化泛函用于带隙/能带",
+    "keyword": "XC_FUNCTIONAL",
+    "recommended": "PBE0 / HSE06",
+    "rationale": "GGA 低估带隙；需要准确电子结构与能带时用杂化泛函，代价是计算量显著增大。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "截断/基组",
+    "topic": "平面波截断能",
+    "keyword": "CUTOFF",
+    "recommended": "350–600 Ry（含 4d/5d 重元素建议 ≥500）",
+    "rationale": "重元素赝势较硬，需较高平面波截断保证收敛；建议做截断收敛测试。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "截断/基组",
+    "topic": "相对截断",
+    "keyword": "REL_CUTOFF",
+    "recommended": "50–60 Ry",
+    "rationale": "控制格点映射精度，推荐 60；过大显著增加内存。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "截断/基组",
+    "topic": "基组库选择",
+    "keyword": "BASIS_SET_FILE_NAME",
+    "recommended": "BASIS_MOLOPT；重元素用 BASIS_MOLOPT_UZH",
+    "rationale": "BASIS_MOLOPT 缺 4d/5d 金属高质量基组；Ir/Ru/Au/Pt 等需切换到 BASIS_MOLOPT_UZH（如 DZVP-MOLOPT-SR-GTH）。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "截断/基组",
+    "topic": "赝势",
+    "keyword": "POTENTIAL",
+    "recommended": "GTH-PBE",
+    "rationale": "GTH 赝势 + MOLOPT 基组为 CP2K 标准搭配；GTH-PBE 为通用别名。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "k 点",
+    "topic": "k 点采样",
+    "keyword": "&KPOINTS",
+    "recommended": "表面 Γ 或 2×2×1；体相 4×4×4",
+    "rationale": "表面平板沿真空方向 (z) 取 1 个 k 点即可；体相按对称性均匀采样。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "色散",
+    "topic": "范德华色散校正",
+    "keyword": "&VDW_POTENTIAL",
+    "recommended": "DFT-D3(BJ)",
+    "rationale": "周期性/大体系及吸附体系必备，纠正 GGA 缺失的长程色散相互作用。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "Smearing",
+    "topic": "电子温度展宽",
+    "keyword": "&SMEAR",
+    "recommended": "FERMI_DIRAC 300 K（金属必需；绝缘体可关闭）",
+    "rationale": "金属体系费米面附近占据跃迁需展宽加速 SCF 收敛；绝缘体可关闭。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "SCF 收敛",
+    "topic": "电荷密度混合",
+    "keyword": "&MIXING",
+    "recommended": "BROYDEN_MIXING · ALPHA 0.4 · NBROYDEN 8",
+    "rationale": "默认即可覆盖 90% 场景；能量振荡时降 ALPHA 至 0.1–0.2 或换 PULAY_MIXING，并增大 NBROYDEN。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "SCF 收敛",
+    "topic": "SCF 收敛判据",
+    "keyword": "EPS_SCF / MAX_SCF",
+    "recommended": "1.0E-6 / 128",
+    "rationale": "结构优化 EPS_SCF 1E-6 足够；难收敛时提高 MAX_SCF 或 SCF_GUESS ATOMIC。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "PDOS/DOS",
+    "topic": "态密度与投影态密度",
+    "keyword": "&DOS / &PDOS",
+    "recommended": "NLUMO -1 + COMPONENTS T",
+    "rationale": "NLUMO -1 输出全部未占据轨道；COMPONENTS T 输出 s/p/d/f 全分量，供 d/p 带中心计算。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "泊松求解",
+    "topic": "表面平板静电求解",
+    "keyword": "&POISSON / PSOLVER",
+    "recommended": "PERIODIC XY + PSOLVER MT",
+    "rationale": "表面模型沿 z 非周期，用 Martyna–Tuckerman 求解器消除层间伪静电相互作用。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "几何优化",
+    "topic": "几何优化器",
+    "keyword": "&GEO_OPT",
+    "recommended": "BFGS · MAX_ITER 200",
+    "rationale": "默认收敛判据 (maxGrad) 即可；收敛慢时检查初始结构与受力是否持续下降。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "溶剂化",
+    "topic": "隐式溶剂模型",
+    "keyword": "&SCCS",
+    "recommended": "水 ε ≈ 78（研究溶剂化界面时开启）",
+    "rationale": "SCCS 隐式溶剂用于研究溶剂化/界面效应，可叠加显式水层。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "磁性",
+    "topic": "自旋极化与初始磁矩",
+    "keyword": "MAGNETIZATION / LSD",
+    "recommended": "金属/磁性体系开启自旋极化并设初始磁矩",
+    "rationale": "含过渡金属的开壳层体系需指定初始磁矩，避免收敛到错误磁态。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "对角化",
+    "topic": "对角化算法",
+    "keyword": "&DIAGONALIZATION",
+    "recommended": "金属用 STANDARD；大带隙绝缘体可用 OT",
+    "rationale": "OT 速度更快但金属体系需 STANDARD 对角化以保证数值稳定。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "Orbital Transformation 方法选择",
+    "keyword": "&OT",
+    "recommended": "非金属、带隙体系（半导体/绝缘体）推荐 OT；金属体系用对角化",
+    "rationale": "OT 无需昂贵对角化、速度快，预条件正确则保证找到电子极小值；但不支持 smearing、对金属体系收敛差，故适用于带隙体系。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "OT 预处理器",
+    "keyword": "PRECONDITIONER",
+    "recommended": "FULL_ALL（默认推荐，配 ENERGY_GAP 低估带隙）；大体系用 FULL_SINGLE_INVERSE / FULL_KINETIC",
+    "rationale": "正确预条件可使极小化速度提升数个数量级。FULL_ALL 最高效但需 ENERGY_GAP 为 HOMO-LUMO 能隙的低估值；极大体系构建成本高可降级为 FULL_KINETIC。",
+    "source": "CP2K 官方手册 + Multiwfn",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "OT 最小化器",
+    "keyword": "MINIMIZER",
+    "recommended": "CG（默认最可靠）；行为良好体系可用 DIIS 加速约 50%",
+    "rationale": "CG 共轭梯度最稳健、适用困难体系；DIIS 直接反演迭代子空间更快但可靠性略差；BROYDEN/SD/LBFGS 为备选。",
+    "source": "CP2K 官方手册 + Multiwfn",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "OT 线搜索算法",
+    "keyword": "LINESEARCH",
+    "recommended": "2PNT（默认，几乎总是可行）；难收敛时换 3PNT 或 GOLD",
+    "rationale": "2PNT 两点外推性价比最高；连续 OT CG 步不降能量时用 3PNT；GOLD 黄金分割最稳健但昂贵。MINIMIZER CG + LINESEARCH GOLD 保证收敛。",
+    "source": "CP2K 官方手册 + Multiwfn",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "OT 算法（正交性）",
+    "keyword": "ALGORITHM",
+    "recommended": "STRICT（默认，严格正交）/ IRAC（迭代细化）",
+    "rationale": "STRICT 基于泰勒展开或对角化保证严格正交；IRAC 为近似合同变换迭代细化，可用 ON_THE_FLY_LOC 即时局域化。",
+    "source": "CP2K 官方手册 + Multiwfn",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "OT 能量间隙（预条件）",
+    "keyword": "ENERGY_GAP",
+    "recommended": "FULL_ALL 配 HOMO-LUMO 能隙的低估值（如 0.001 a.u.）；默认 -1 由 CP2K 自动",
+    "rationale": "ENERGY_GAP 用于预处理器构造，FULL_ALL 时取低估小值可驯服预处理器、加速收敛；负值则按预处理器类型自动选择。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "OT 方法",
+    "topic": "外层 SCF 循环",
+    "keyword": "&OUTER_SCF",
+    "recommended": "MAX_SCF 20 · EPS_SCF 1E-6（难收敛 OT 时用于稳定外层变量）",
+    "rationale": "外层 SCF 循环包裹内层 SCF，用于稳定困难 OT 收敛；EPS_SCF 外层应 ≤ 内层 EPS_SCF。",
+    "source": "CP2K 官方手册 + Multiwfn",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "Multiwfn 生成",
+    "topic": "用 Multiwfn 切换 OT 模式",
+    "keyword": "Multiwfn → cp2k → 选项 4",
+    "recommended": "CP2K 配置菜单选项 4「Switching between diagonalization and OT」切换",
+    "rationale": "Multiwfn 内置 CP2K 生成器的配置菜单选项 4 可在对角化与 OT 间切换；切到 OT 后自动生成 &OT（PRECONDITIONER/MINIMIZER/LINESEARCH/ALGORITHM）+ &OUTER_SCF，且不再生成 &MIXING。",
+    "source": "Multiwfn 内置 CP2K 生成器",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "周期性",
+    "topic": "周期边界维度",
+    "keyword": "&CELL / PERIODIC",
+    "recommended": "表面 XY；体相 XYZ；分子 NONE",
+    "rationale": "依据体系维度设置，与泊松求解器、k 点采样联动。",
+    "source": "CP2K 官方手册",
+    "origin": "CP2K官方"
+  },
+  {
+    "category": "Multiwfn 生成",
+    "topic": "用 Multiwfn 生成 CP2K 输入文件",
+    "keyword": "Multiwfn → cp2k",
+    "recommended": "主菜单输入 cp2k，选任务/基组/色散/k点后生成",
+    "rationale": "Multiwfn 内置 CP2K 输入生成器（默认 PBE + DZVP-MOLOPT-SR-GTH + GTH-PBE + 350/50 Ry 截断），可作为学习默认参数与快速起点的参考。",
+    "source": "Multiwfn 内置 CP2K 生成器",
+    "origin": "CP2K官方"
+  }
+]

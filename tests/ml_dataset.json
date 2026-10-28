@@ -1,0 +1,10 @@
+[
+  {"name":"Pt111", "source":"test", "features":{"d_band_center":-2.45,"work_function":5.6,"local_softness_si":0.31}, "target":0.42},
+  {"name":"Au111", "source":"test", "features":{"d_band_center":-3.51,"work_function":5.3,"local_softness_si":0.18}, "target":0.68},
+  {"name":"Cu111", "source":"test", "features":{"d_band_center":-2.67,"work_function":4.9,"local_softness_si":0.27}, "target":0.55},
+  {"name":"NiO001", "source":"test", "features":{"d_band_center":-1.95,"work_function":5.2,"local_softness_si":0.35}, "target":0.39},
+  {"name":"TiO2_110", "source":"test", "features":{"d_band_center":-1.80,"work_function":5.9,"local_softness_si":0.29}, "target":0.47},
+  {"name":"IrO2_110", "source":"test", "features":{"d_band_center":-1.72,"work_function":6.1,"local_softness_si":0.44}, "target":0.29},
+  {"name":"RuO2_110", "source":"test", "features":{"d_band_center":-1.65,"work_function":5.7,"local_softness_si":0.48}, "target":0.27},
+  {"name":"CoOOH", "source":"test", "features":{"d_band_center":-2.10,"work_function":5.5,"local_softness_si":0.33}, "target":0.36}
+]
